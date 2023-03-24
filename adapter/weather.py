@@ -40,7 +40,6 @@ class WeatherAdapter:
         self.api_key = api_key
 
         self.weather_data = self.get_weather()
-        print(self.weather_data)
 
     def get_weather(self):
         """
@@ -63,24 +62,21 @@ class WeatherAlert(WeatherAdapter):
     def __init__(self, lat: str, lon: str, api_key: str):
         super().__init__(lat, lon, api_key)
 
-    def morning_wind_alert(self):
+    def daily_wind_alert(self):
         today_wind = {}
         for each_hour in self.weather_data["hourly"]:
             date_time_obj = datetime.datetime.fromtimestamp(each_hour["dt"])
             if date_time_obj.date() == datetime.date.today() and each_hour["wind_speed"] > 15:
                 today_wind[date_time_obj.strftime("%H:%M")] = each_hour["wind_speed"]
-
+        
         if today_wind:
             return today_wind
         else:
             return False
 
 
-def get_weather():
+if __name__ == '__main__':
     load_dotenv()
     weather = WeatherAlert("40.6879", "122.1223", os.getenv('API_KEY'))
-    print(weather.morning_wind_alert())
-
-
-if __name__ == '__main__':
-    get_weather()
+    print(weather.daily_wind_alert())
+    
